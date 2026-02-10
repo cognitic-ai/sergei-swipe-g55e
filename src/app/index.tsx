@@ -104,11 +104,8 @@ export default function TinderScreen() {
       preset: "error",
       haptic: "error",
     });
-    // Reset to same card after a brief delay
-    setTimeout(() => {
-      activeIndex.value = currentIndex;
-    }, 400);
-  }, [currentIndex, activeIndex]);
+    // Don't advance the card - the swipe animation will spring back
+  }, []);
 
   const handleSwipeRight = useCallback(() => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -179,139 +176,136 @@ export default function TinderScreen() {
               maxHeight: "85%",
             }}
           >
-            {PROFILES.map((profile, index) => {
-              if (index < currentIndex || index > currentIndex + 1) return null;
-              return (
-                <SwipeCard
-                  key={`${profile.id}-${currentIndex}`}
-                  index={index}
-                  activeIndex={activeIndex}
-                  totalCards={PROFILES.length}
-                  onSwipeLeft={handleSwipeLeft}
-                  onSwipeRight={handleSwipeRight}
+            {PROFILES.map((profile, index) => (
+              <SwipeCard
+                key={profile.id}
+                index={index}
+                activeIndex={activeIndex}
+                totalCards={PROFILES.length}
+                onSwipeLeft={handleSwipeLeft}
+                onSwipeRight={handleSwipeRight}
+              >
+                <View
+                  style={{
+                    flex: 1,
+                    borderRadius: 16,
+                    borderCurve: "continuous",
+                    overflow: "hidden",
+                    backgroundColor: "#222",
+                  }}
                 >
-                  <View
+                  <Image
+                    source={profile.image}
+                    style={{ width: "100%", height: "100%" }}
+                    contentFit="cover"
+                    transition={200}
+                  />
+                  <LinearGradient
+                    colors={[
+                      "transparent",
+                      "rgba(0,0,0,0.15)",
+                      "rgba(0,0,0,0.8)",
+                    ]}
                     style={{
-                      flex: 1,
-                      borderRadius: 16,
-                      borderCurve: "continuous",
-                      overflow: "hidden",
-                      backgroundColor: "#222",
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: "55%",
+                      justifyContent: "flex-end",
+                      padding: 20,
                     }}
                   >
-                    <Image
-                      source={profile.image}
-                      style={{ width: "100%", height: "100%" }}
-                      contentFit="cover"
-                      transition={200}
-                    />
-                    <LinearGradient
-                      colors={[
-                        "transparent",
-                        "rgba(0,0,0,0.15)",
-                        "rgba(0,0,0,0.8)",
-                      ]}
+                    <View
                       style={{
-                        position: "absolute",
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        height: "55%",
-                        justifyContent: "flex-end",
-                        padding: 20,
+                        flexDirection: "row",
+                        alignItems: "flex-end",
+                        gap: 8,
                       }}
                     >
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "flex-end",
-                          gap: 8,
-                        }}
-                      >
-                        <Text
-                          style={{
-                            color: "#fff",
-                            fontSize: 32,
-                            fontWeight: "800",
-                          }}
-                        >
-                          {profile.name}
-                        </Text>
-                        <Text
-                          style={{
-                            color: "#fff",
-                            fontSize: 26,
-                            fontWeight: "400",
-                            marginBottom: 2,
-                          }}
-                        >
-                          {profile.age}
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 4,
-                          marginTop: 4,
-                        }}
-                      >
-                        <Ionicons name="location-sharp" size={14} color="#ddd" />
-                        <Text
-                          style={{
-                            color: "#ddd",
-                            fontSize: 14,
-                          }}
-                        >
-                          {profile.distance}
-                        </Text>
-                      </View>
                       <Text
                         style={{
-                          color: "#eee",
-                          fontSize: 15,
-                          marginTop: 10,
-                          lineHeight: 20,
+                          color: "#fff",
+                          fontSize: 32,
+                          fontWeight: "800",
                         }}
                       >
-                        {profile.bio}
+                        {profile.name}
                       </Text>
-                      <View
+                      <Text
                         style={{
-                          flexDirection: "row",
-                          gap: 8,
-                          marginTop: 12,
-                          flexWrap: "wrap",
+                          color: "#fff",
+                          fontSize: 26,
+                          fontWeight: "400",
+                          marginBottom: 2,
                         }}
                       >
-                        {profile.tags.map((tag) => (
-                          <View
-                            key={tag}
+                        {profile.age}
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 4,
+                        marginTop: 4,
+                      }}
+                    >
+                      <Ionicons name="location-sharp" size={14} color="#ddd" />
+                      <Text
+                        style={{
+                          color: "#ddd",
+                          fontSize: 14,
+                        }}
+                      >
+                        {profile.distance}
+                      </Text>
+                    </View>
+                    <Text
+                      style={{
+                        color: "#eee",
+                        fontSize: 15,
+                        marginTop: 10,
+                        lineHeight: 20,
+                      }}
+                    >
+                      {profile.bio}
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        gap: 8,
+                        marginTop: 12,
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {profile.tags.map((tag) => (
+                        <View
+                          key={tag}
+                          style={{
+                            borderWidth: 1,
+                            borderColor: "rgba(255,255,255,0.5)",
+                            borderRadius: 20,
+                            paddingHorizontal: 12,
+                            paddingVertical: 4,
+                          }}
+                        >
+                          <Text
                             style={{
-                              borderWidth: 1,
-                              borderColor: "rgba(255,255,255,0.5)",
-                              borderRadius: 20,
-                              paddingHorizontal: 12,
-                              paddingVertical: 4,
+                              color: "#fff",
+                              fontSize: 13,
+                              fontWeight: "500",
                             }}
                           >
-                            <Text
-                              style={{
-                                color: "#fff",
-                                fontSize: 13,
-                                fontWeight: "500",
-                              }}
-                            >
-                              {tag}
-                            </Text>
-                          </View>
+                            {tag}
+                          </Text>
+                        </View>
                         ))}
-                      </View>
-                    </LinearGradient>
-                  </View>
-                </SwipeCard>
-              );
-            })}
+                    </View>
+                  </LinearGradient>
+                </View>
+              </SwipeCard>
+            ))}
           </View>
         </View>
 
